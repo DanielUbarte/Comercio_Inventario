@@ -4,6 +4,7 @@ Imports System.IO
 Public Class FrmInventario
 
     Private Sub FrmInventario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ofdImagen.InitialDirectory = ProductoManager.ObtenerRutaCarpetaImagenes()
         CargarCategorias()
         CargarDataGridView()
         ActualizarResumen()
@@ -329,14 +330,17 @@ Public Class FrmInventario
     End Sub
 
     ''' <summary>
-    ''' Permite al usuario seleccionar una imagen para el producto usando OpenFileDialog.
+    ''' Permite al usuario seleccionar una imagen para el producto usando OpenFileDialog apuntando a la ruta de imágenes.
     ''' </summary>
     Private Sub btnSeleccionarImagen_Click(sender As Object, e As EventArgs) Handles btnSeleccionarImagen.Click
+        ofdImagen.InitialDirectory = ProductoManager.ObtenerRutaCarpetaImagenes()
         If ofdImagen.ShowDialog() = DialogResult.OK Then
             Try
                 ' Cargar imagen evitando bloquear el archivo original
-                Using tempImg As Image = Image.FromFile(ofdImagen.FileName)
-                    picProducto.Image = New Bitmap(tempImg)
+                Using fs As New FileStream(ofdImagen.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+                    Using tempImg As Image = Image.FromStream(fs)
+                        picProducto.Image = New Bitmap(tempImg)
+                    End Using
                 End Using
             Catch ex As Exception
                 MessageBox.Show("Error al cargar la imagen seleccionada: " & ex.Message, "Error de Imagen", MessageBoxButtons.OK, MessageBoxIcon.Error)
