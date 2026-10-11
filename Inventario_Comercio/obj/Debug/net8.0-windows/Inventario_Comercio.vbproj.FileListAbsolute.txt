@@ -1,0 +1,14 @@
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\bin\Debug\net8.0-windows\Inventario_Comercio.exe
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\bin\Debug\net8.0-windows\Inventario_Comercio.deps.json
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\bin\Debug\net8.0-windows\Inventario_Comercio.runtimeconfig.json
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\bin\Debug\net8.0-windows\Inventario_Comercio.dll
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\bin\Debug\net8.0-windows\Inventario_Comercio.pdb
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\Inventario_Comercio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\Inventario_Comercio.AssemblyInfoInputs.cache
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\Inventario_Comercio.AssemblyInfo.vb
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\Inventario_Comercio.vbproj.CoreCompileInputs.cache
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\Inventario_Comercio.dll
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\refint\Inventario_Comercio.dll
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\Inventario_Comercio.pdb
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\Inventario_Comercio.genruntimeconfig.cache
+C:\Users\Daniel Ubarte\Documents\Proy_Inv_com\Inventario_Comercio\obj\Debug\net8.0-windows\ref\Inventario_Comercio.dll
