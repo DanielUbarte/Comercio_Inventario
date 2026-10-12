@@ -39,6 +39,7 @@ Public Class ProductoManager
         Dim imgJugoPina As Image = CargarImagenProducto("jugopiña.png", "Jugo Piña", Color.FromArgb(255, 235, 130), Color.FromArgb(230, 190, 40))
         Dim imgJugoUva As Image = CargarImagenProducto("jugouva.jpg", "Jugo Uva", Color.FromArgb(200, 160, 230), Color.FromArgb(130, 80, 180))
         Dim imgJabon As Image = CrearImagenDemo("Jabón Fregar", Color.FromArgb(150, 220, 255), Color.FromArgb(80, 160, 230))
+        Dim imgMantequilla As Image = CrearImagenDemo("Mantequilla", Color.FromArgb(255, 240, 150), Color.FromArgb(240, 200, 60))
 
         ' 4. Productos registrados con stock mínimo y comercio asignado
         productos.Add(New Producto("001", "Arroz Premium 1kg", 25, "Alimentos", True, False, "Alimento", imgArroz, 10, "Minisuper Chinito RS"))
@@ -48,6 +49,7 @@ Public Class ProductoManager
         productos.Add(New Producto("005", "Jugo de Piña 1L", 12, "Bebidas", False, False, "Bebida", imgJugoPina, 10, "Minisuper Dragón Dorado"))
         productos.Add(New Producto("006", "Jugo de Uva 1L", 18, "Bebidas", True, False, "Bebida", imgJugoUva, 10, "Minisuper Chinito RS"))
         productos.Add(New Producto("007", "Jabón de Fregar 500g", 8, "Limpieza", False, True, "Limpieza", imgJabon, 20, "Minisuper Chinito RS"))
+        productos.Add(New Producto("008", "Mantequilla La Perfecta 250g", 2, "Alimentos", False, True, "Alimento", imgMantequilla, 15, "Minisuper Chinito RS"))
 
         datosInicializados = True
 
@@ -210,6 +212,8 @@ Public Class ProductoManager
 
                     solicitudes.Insert(0, New SolicitudReabastecimiento(p.Comercio, ubicacion, p.Codigo, p.Nombre, p.Cantidad, p.StockMinimo, sugerido))
                 End If
+            Else
+                p.RequiereReposicion = False
             End If
         Next
     End Sub
@@ -220,7 +224,7 @@ Public Class ProductoManager
     Public Shared Function TomarSolicitud(idSolicitud As String, nombreProveedor As String) As Boolean
         InicializarDatosDemo()
         Dim sol As SolicitudReabastecimiento = solicitudes.FirstOrDefault(Function(s) s.Id.Equals(idSolicitud, StringComparison.OrdinalIgnoreCase))
-        If sol IsNot Nothing AndAlso sol.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase) Then
+        If sol IsNot Nothing AndAlso (sol.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase) OrElse sol.Estado.Equals("En Camino", StringComparison.OrdinalIgnoreCase)) Then
             sol.Estado = "En Camino"
             sol.ProveedorAsignado = nombreProveedor
             sol.FechaAtencion = DateTime.Now
@@ -244,6 +248,7 @@ Public Class ProductoManager
             Dim prod As Producto = BuscarPorCodigo(sol.CodigoProducto)
             If prod IsNot Nothing Then
                 prod.Cantidad += cantidadSurtida
+                sol.StockActual = prod.Cantidad
                 If prod.Cantidad > prod.StockMinimo Then
                     prod.RequiereReposicion = False
                 End If
