@@ -39,7 +39,7 @@ Public Class ProductoManager
         Dim imgJugoPina As Image = CargarImagenProducto("jugopiña.png", "Jugo Piña", Color.FromArgb(255, 235, 130), Color.FromArgb(230, 190, 40))
         Dim imgJugoUva As Image = CargarImagenProducto("jugouva.jpg", "Jugo Uva", Color.FromArgb(200, 160, 230), Color.FromArgb(130, 80, 180))
         Dim imgJabon As Image = CrearImagenDemo("Jabón Fregar", Color.FromArgb(150, 220, 255), Color.FromArgb(80, 160, 230))
-        Dim imgMantequilla As Image = CrearImagenDemo("Mantequilla", Color.FromArgb(255, 240, 150), Color.FromArgb(240, 200, 60))
+        Dim imgMantequilla As Image = CargarImagenProducto("mantequilla.jpg", "Mantequilla", Color.FromArgb(255, 240, 150), Color.FromArgb(240, 200, 60))
 
         ' 4. Productos registrados con stock mínimo y comercio asignado
         productos.Add(New Producto("001", "Arroz Premium 1kg", 25, "Alimentos", True, False, "Alimento", imgArroz, 10, "Minisuper Chinito RS"))
