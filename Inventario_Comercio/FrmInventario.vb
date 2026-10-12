@@ -41,16 +41,25 @@ Public Class FrmInventario
         ' Crear estructura de columnas personalizada
         dgvProductos.Columns.Add("colCodigo", "Código")
         dgvProductos.Columns.Add("colNombre", "Nombre")
-        dgvProductos.Columns.Add("colCantidad", "Cantidad")
+        dgvProductos.Columns.Add("colCantidad", "Stock")
+        dgvProductos.Columns.Add("colMinimo", "Stock Mín.")
+        dgvProductos.Columns.Add("colComercio", "Comercio")
         dgvProductos.Columns.Add("colCategoria", "Categoría")
         dgvProductos.Columns.Add("colPromocion", "Promoción")
         dgvProductos.Columns.Add("colReposicion", "Reposición")
-        dgvProductos.Columns.Add("colTipo", "Tipo de Producto")
+        dgvProductos.Columns.Add("colTipo", "Tipo")
 
         For Each p As Producto In lista
             Dim promoTexto As String = If(p.EnPromocion, "Sí", "No")
-            Dim repoTexto As String = If(p.RequiereReposicion, "Sí", "No")
-            dgvProductos.Rows.Add(p.Codigo, p.Nombre, p.Cantidad, p.Categoria, promoTexto, repoTexto, p.TipoProducto)
+            Dim repoTexto As String = If(p.RequiereReposicion OrElse p.Cantidad <= p.StockMinimo, "⚠️ Sí (Bajo)", "No")
+            Dim rowIndex As Integer = dgvProductos.Rows.Add(p.Codigo, p.Nombre, p.Cantidad, p.StockMinimo, p.Comercio, p.Categoria, promoTexto, repoTexto, p.TipoProducto)
+            
+            ' Si el stock está en o por debajo del mínimo, resaltar visualmente en color de alerta
+            If p.Cantidad <= p.StockMinimo Then
+                dgvProductos.Rows(rowIndex).DefaultCellStyle.BackColor = Color.FromArgb(255, 235, 238)
+                dgvProductos.Rows(rowIndex).Cells("colCantidad").Style.ForeColor = Color.Crimson
+                dgvProductos.Rows(rowIndex).Cells("colCantidad").Style.Font = New Font(dgvProductos.Font, FontStyle.Bold)
+            End If
         Next
 
         dgvProductos.ClearSelection()
@@ -58,11 +67,20 @@ Public Class FrmInventario
     End Sub
 
     ''' <summary>
-    ''' Actualiza las tarjetas superiores de resumen total de productos y unidades.
+    ''' Actualiza las tarjetas superiores de resumen total de productos, unidades y alertas para proveedores.
     ''' </summary>
     Public Sub ActualizarResumen()
         lblTotalProductosVal.Text = ProductoManager.ObtenerTotalProductos().ToString()
         lblTotalUnidadesVal.Text = ProductoManager.ObtenerTotalUnidades().ToString("N0")
+
+        Dim alertasPendientes As Integer = ProductoManager.ObtenerAlertasPendientesCount()
+        If alertasPendientes > 0 Then
+            btnNavProveedores.Text = $"🚚 Red Proveedores ({alertasPendientes})"
+            btnPortalProveedores.Text = $"🚚 Portal Proveedores ({alertasPendientes} Pendientes)"
+        Else
+            btnNavProveedores.Text = "🚚 Red Proveedores"
+            btnPortalProveedores.Text = "🚚 Portal de Red de Proveedores"
+        End If
     End Sub
 
     ''' <summary>
@@ -356,6 +374,50 @@ Public Class FrmInventario
         frmVisual.ShowDialog()
         ' Al regresar del formulario visual, refrescar la tabla y el resumen por si se requiriera
         CargarDataGridView()
+    End Sub
+
+    ''' <summary>
+    ''' Abre el formulario del Portal de Proveedores y Notificaciones de Reabastecimiento.
+    ''' </summary>
+    Private Sub btnPortalProveedores_Click(sender As Object, e As EventArgs) Handles btnPortalProveedores.Click, btnNavProveedores.Click
+        Dim frmProveedores As New FrmPortalProveedores()
+        frmProveedores.ShowDialog()
+        ' Al regresar, refrescar la tabla por si los proveedores reabastecieron stock
+        CargarDataGridView()
+        ActualizarResumen()
+    End Sub
+
+    ''' <summary>
+    ''' Simula el consumo o venta de un producto para demostrar cómo se disparan
+    ''' las notificaciones a los proveedores cuando el stock cae por debajo del mínimo.
+    ''' </summary>
+    Private Sub btnSimularConsumoInv_Click(sender As Object, e As EventArgs) Handles btnSimularConsumoInv.Click
+        Dim codigo As String = txtCodigo.Text.Trim()
+        If String.IsNullOrWhiteSpace(codigo) Then
+            If dgvProductos.SelectedRows.Count > 0 Then
+                codigo = dgvProductos.SelectedRows(0).Cells("colCodigo").Value.ToString()
+            Else
+                codigo = "007" ' Jabón de fregar 500g
+            End If
+        End If
+
+        Dim prod As Producto = ProductoManager.BuscarPorCodigo(codigo)
+        If prod IsNot Nothing Then
+            Dim resp As DialogResult = MessageBox.Show(
+                $"¿Deseas simular una venta de 5 unidades de '{prod.Nombre}' en '{prod.Comercio}'?" & vbCrLf & vbCrLf &
+                $"Stock actual: {prod.Cantidad} | Stock Mínimo: {prod.StockMinimo}" & vbCrLf &
+                "Al bajar del mínimo, se emitirá una alerta automática hacia la red de proveedores.",
+                "Simulador de Venta / Consumo", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+
+            If resp = DialogResult.Yes Then
+                ProductoManager.SimularConsumoVenta(prod.Codigo, 5)
+                CargarDataGridView()
+                ActualizarResumen()
+                MessageBox.Show($"¡Venta procesada con éxito! El nuevo stock de '{prod.Nombre}' es {prod.Cantidad}." & vbCrLf & vbCrLf &
+                                "Se ha generado la notificación para los proveedores. Puedes abrir el 'Portal Proveedores' para ver la orden.",
+                                "Alerta Emitida", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+        End If
     End Sub
 
 End Class

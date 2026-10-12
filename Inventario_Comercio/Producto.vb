@@ -7,6 +7,8 @@ Public Class Producto
     Public Property Codigo As String
     Public Property Nombre As String
     Public Property Cantidad As Integer
+    Public Property StockMinimo As Integer
+    Public Property Comercio As String
     Public Property Categoria As String
     Public Property EnPromocion As Boolean
     Public Property RequiereReposicion As Boolean
@@ -18,6 +20,8 @@ Public Class Producto
         Codigo = String.Empty
         Nombre = String.Empty
         Cantidad = 0
+        StockMinimo = 10
+        Comercio = "Minisuper Chinito RS"
         Categoria = String.Empty
         EnPromocion = False
         RequiereReposicion = False
@@ -27,13 +31,17 @@ Public Class Producto
 
     Public Sub New(pCodigo As String, pNombre As String, pCantidad As Integer, pCategoria As String,
                    pEnPromocion As Boolean, pRequiereReposicion As Boolean, pTipoProducto As String,
-                   Optional pImagen As Image = Nothing)
+                   Optional pImagen As Image = Nothing,
+                   Optional pStockMinimo As Integer = 10,
+                   Optional pComercio As String = "Minisuper Chinito RS")
         Codigo = pCodigo
         Nombre = pNombre
         Cantidad = pCantidad
+        StockMinimo = pStockMinimo
+        Comercio = If(String.IsNullOrWhiteSpace(pComercio), "Minisuper Chinito RS", pComercio)
         Categoria = pCategoria
         EnPromocion = pEnPromocion
-        RequiereReposicion = pRequiereReposicion
+        RequiereReposicion = pRequiereReposicion OrElse (pCantidad <= pStockMinimo)
         TipoProducto = pTipoProducto
         Imagen = pImagen
     End Sub

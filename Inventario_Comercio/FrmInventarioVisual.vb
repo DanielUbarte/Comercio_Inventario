@@ -85,23 +85,25 @@ Public Class FrmInventarioVisual
         }
         pnlCard.Controls.Add(lblNombre)
 
-        ' 3. Label Código
+        ' 3. Label Código y Comercio
         Dim lblCodigo As New Label With {
-            .Text = $"Código: {prod.Codigo}",
+            .Text = $"Cod: {prod.Codigo} • {prod.Comercio}",
             .Location = New Point(10, 182),
             .Size = New Size(220, 18),
-            .Font = New Font("Segoe UI", 8.5F, FontStyle.Regular),
-            .ForeColor = Color.FromArgb(66, 72, 84)
+            .Font = New Font("Segoe UI", 8.0F, FontStyle.Regular),
+            .ForeColor = Color.FromArgb(66, 72, 84),
+            .AutoEllipsis = True
         }
         pnlCard.Controls.Add(lblCodigo)
 
-        ' 4. Label Cantidad
+        ' 4. Label Cantidad y Stock Mínimo
+        Dim esStockBajo As Boolean = (prod.Cantidad <= prod.StockMinimo)
         Dim lblCantidad As New Label With {
-            .Text = $"Cantidad: {prod.Cantidad} unidades",
+            .Text = If(esStockBajo, $"⚠️ Stock: {prod.Cantidad} (Mín: {prod.StockMinimo})", $"Cantidad: {prod.Cantidad} (Mín: {prod.StockMinimo})"),
             .Location = New Point(10, 202),
             .Size = New Size(220, 18),
             .Font = New Font("Segoe UI", 8.5F, FontStyle.Bold),
-            .ForeColor = Color.FromArgb(32, 38, 49)
+            .ForeColor = If(esStockBajo, Color.Crimson, Color.FromArgb(32, 38, 49))
         }
         pnlCard.Controls.Add(lblCantidad)
 
